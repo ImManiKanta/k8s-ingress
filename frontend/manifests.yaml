@@ -14,46 +14,46 @@ spec:
       project: roboshop
       tier: frontend
       component: frontend
-template:
-  metadata:
-    labels: 
-      project: roboshop
-      tier: frontend
-      component: frontend
-  spec:
-    volumes:
-      - name: nginx-config
-        configMap:
-          name: frontend
-    containers:
-    - name: frontend
-      image: manidevops20/frontend:1.0.0
-      imagePullPolicy: Always
-      resources:
-        requests:
-          cpu: "100m"
-          memory: "128Mi"
-        limits:
-          cpu: "100m"
-          memory: "128Mi"
-      readinessProbe:
-        tcpSocket:
-          port: 80
-        failureThreshold: 2
-        periodSeconds: 10
-        initialDelaySeconds: 15
-      livenessProbe:
-        httpGet:
-          path: /
-          port: 80
-        failureThreshold: 2
-        periodSeconds: 10
-      volumeMounts:
+  template:
+    metadata:
+      labels: 
+        project: roboshop
+        tier: frontend
+        component: frontend
+    spec:
+      volumes:
         - name: nginx-config
-        # by default it mounts and thinks as directory
-          mountPath: "/etc/nginx/nginx.conf"
-          subPath: nginx.conf
-          readOnly: true        
+          configMap:
+            name: frontend
+      containers:
+      - name: frontend
+        image: manidevops20/frontend:1.0.0
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 2
+          periodSeconds: 10
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 2
+          periodSeconds: 10
+        volumeMounts:
+          - name: nginx-config
+          # by default it mounts and thinks as directory
+            mountPath: "/etc/nginx/nginx.conf"
+            subPath: nginx.conf
+            readOnly: true        
 
 ---
 apiVersion: v1
