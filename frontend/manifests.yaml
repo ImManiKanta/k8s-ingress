@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: roboshop
+  labels:
+    project: roboshop
+    tier: frontend
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: roboshop
+      tier: frontend
+      component: frontend
+template:
+  metadata:
+    labels: 
+      project: roboshop
+      tier: frontend
+      component: frontend
+  spec:
+    volumes:
+      - name: nginx-config
+        configMap:
+          name: frontend
+    containers:
+    - name: frontend
+      image: manidevops20/frontend:1.0.0
+      imagePullPolicy: Always
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+      readinessProbe:
+        tcpSocket:
+          port: 80
+        failureThreshold: 2
+        periodSeconds: 10
+        initialDelaySeconds: 15
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80
+        failureThreshold: 2
+        periodSeconds: 10
+      volumeMounts:
+        - name: nginx-config
+        # by default it mounts and thinks as directory
+          mountPath: "/etc/nginx/nginx.conf"
+          subPath: nginx.conf
+          readOnly: true        
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: roboshop
+  labels:
+    project: roboshop
+    tier: frontend
+    component: frontend
+spec:
+  selector:
+    # labels are used as selectors
+    project: roboshop
+    tier: frontend
+    component: frontend
+  ports:
+  - protocol: TCP
+    port: 80 # servie port
+    targetPort: 80 # container port
