@@ -51,6 +51,8 @@ spec:
         volumeMounts:
         - name: mongodb
           mountPath: /data/db
+      nodeSelector:
+        topology.kubernetes.io.zone: us-east-1d
     # PVC
   volumeClaimTemplates:
   - metadata:
